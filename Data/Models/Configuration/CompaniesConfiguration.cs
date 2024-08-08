@@ -1,28 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data.Models.Configuration
+namespace Data.Models.Configuration;
+
+internal class CompaniesConfiguration : IEntityTypeConfiguration<Company>
 {
-    internal class CompaniesConfiguration : IEntityTypeConfiguration<Companies>
+    public void Configure(EntityTypeBuilder<Company> builder)
     {
-        public void Configure(EntityTypeBuilder<Companies> builder)
-        {
-            builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Id);
 
-            builder.HasMany(c => c.Factures)
-                .WithOne(f => f.Company)
-                .HasForeignKey(f => f.CompanyId)
+        builder.HasMany(c => c.Factures)
+            .WithOne(f => f.Company)
+            .HasForeignKey(f => f.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(e => e.UserFactures)
+                .WithOne(f => f.UserCompany)
+                .HasForeignKey(e => e.UserCompanyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(c => c.Addresses)
-                .WithOne(f => f.Company)
-                .HasForeignKey(f => f.CompanyId)
-                .OnDelete(DeleteBehavior.Restrict);
-        }
+        builder.HasOne(c => c.Address)
+            .WithOne(f => f.Company)
+            .HasForeignKey<CompanyAddress>(a => a.CompanyId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

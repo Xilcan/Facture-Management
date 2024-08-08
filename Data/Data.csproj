@@ -18,4 +18,8 @@
     <Folder Include="Diagram\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Interface\Interface.csproj" />
+  </ItemGroup>
+
 </Project>
