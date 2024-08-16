@@ -4,6 +4,7 @@ namespace Data.Models;
 
 public class Address
 {
+    [Key]
     public Guid Id { get; set; }
 
     [Required]

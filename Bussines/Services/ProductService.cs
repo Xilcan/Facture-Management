@@ -6,6 +6,7 @@ using Data.Repositories.Interfaces;
 using Interface.ExceptionsHandling.Exceptions;
 
 namespace Bussines.Services;
+
 public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;

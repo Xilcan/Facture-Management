@@ -1,6 +1,7 @@
 ﻿using Bussines.Dto.ProductCategory;
 
 namespace Bussines.Services.Interfaces;
+
 public interface IProductCategoryService
 {
     public Task<FullProductCategoryGet> GetByIdAsync(Guid id);

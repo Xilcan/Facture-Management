@@ -1,11 +1,14 @@
 ﻿using Bussines.Dto.Company;
 using Bussines.Services.Interfaces;
 using Interface.ExceptionsHandling.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CompanyController : ControllerBase
 {
     private readonly ICompanyService _companyService;

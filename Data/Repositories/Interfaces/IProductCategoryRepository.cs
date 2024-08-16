@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 
 namespace Data.Repositories.Interfaces;
+
 public interface IProductCategoryRepository
 {
     public Task<ProductCategory> GetByIdAsync(Guid id);

@@ -3,6 +3,7 @@ using Bussines.Filters.FactureFilters.Models;
 using Interface.FiltersInterface.PagingFilterInterface;
 
 namespace Bussines.Services.Interfaces;
+
 public interface IFactureService
 {
     public Task<FullFactureGet> GetFactureByIdAsync(Guid id);

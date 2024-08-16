@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 
 namespace Interface.Logger;
+
 public class FileLoggerService : IFileLoggerService
 {
     private readonly string _directoryName = "Logs";

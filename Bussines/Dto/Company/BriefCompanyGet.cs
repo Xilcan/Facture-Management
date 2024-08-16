@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Bussines.Dto.Company;
+
 public class BriefCompanyGet
 {
     public Guid Id { get; set; }

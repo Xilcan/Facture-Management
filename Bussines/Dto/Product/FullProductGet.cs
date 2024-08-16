@@ -2,6 +2,7 @@
 using Data.Models;
 
 namespace Bussines.Dto.Product;
+
 public class FullProductGet
 {
     public Guid Id { get; set; }

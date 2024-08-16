@@ -1,6 +1,7 @@
 ﻿using Bussines.Dto.Product;
 
 namespace Bussines.Services.Interfaces;
+
 public interface IProductService
 {
     public Task<FullProductGet> GetByIdAsync(Guid id);

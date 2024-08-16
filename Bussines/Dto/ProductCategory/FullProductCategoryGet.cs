@@ -1,6 +1,7 @@
 ﻿using Bussines.Dto.Product;
 
 namespace Bussines.Dto.ProductCategory;
+
 public class FullProductCategoryGet
 {
     public Guid Id { get; set; }

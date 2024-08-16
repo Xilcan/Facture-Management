@@ -1,4 +1,5 @@
 ﻿namespace Interface.Logger;
+
 public interface IFileLoggerService
 {
     Task LogRequestAsync(string logMessage);

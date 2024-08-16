@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Data.Models;
 
 namespace Bussines.Dto.Product;
+
 public class ProductPut
 {
     [Required]

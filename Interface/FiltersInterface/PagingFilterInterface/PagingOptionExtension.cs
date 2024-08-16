@@ -1,4 +1,5 @@
 ﻿namespace Interface.FiltersInterface.PagingFilterInterface;
+
 public class PagingOptionExtension : IPagingOptionExtension
 {
     public IEnumerable<string> GetStringOptions() => new List<string> { "10", "20", "50", "100", "all" };

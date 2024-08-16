@@ -2,11 +2,14 @@
 using Bussines.Filters.FactureFilters.Models;
 using Bussines.Services.Interfaces;
 using Interface.FiltersInterface.PagingFilterInterface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class FacturesController : ControllerBase
 {
     private readonly IFactureService _factureService;

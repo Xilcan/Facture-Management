@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Interface.FiltersInterface.FactureFilterInterface;
+
 public class SortingFactureValidation : ValidationAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)

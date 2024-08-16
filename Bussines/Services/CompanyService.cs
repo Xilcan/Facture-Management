@@ -6,6 +6,7 @@ using Data.Repositories.Interfaces;
 using Interface.ExceptionsHandling.Exceptions;
 
 namespace Bussines.Services;
+
 public class CompanyService : ICompanyService
 {
     private readonly IMapper _mapper;
@@ -20,7 +21,7 @@ public class CompanyService : ICompanyService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddAsync(CompanyPost company)
+    public async Task<Guid> AddAsync(CompanyPost company)
     {
         try
         {
@@ -30,8 +31,9 @@ public class CompanyService : ICompanyService
                 throw new BadRequestException($"Company with NIP = {newCompany.NIP} already exists.");
             }
 
-            await _unitOfWork.CompanyRepository.AddAsync(newCompany);
+            var companyId = await _unitOfWork.CompanyRepository.AddAsync(newCompany);
             await _unitOfWork.SaveAsync();
+            return companyId;
         }
         catch (AutoMapperMappingException ex)
         {

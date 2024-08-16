@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Interface.FiltersInterface.PagingFilterInterface;
+
 public class PagingValidator : ValidationAttribute
 {
     protected override ValidationResult IsValid(object? value, ValidationContext validationContext)

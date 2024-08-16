@@ -2,6 +2,7 @@
 using Interface.FiltersInterface.FactureFilterInterface;
 
 namespace Bussines.Filters.FactureFilters.Models;
+
 public class FactureSortOptions
 {
     public FactureSortOptions()

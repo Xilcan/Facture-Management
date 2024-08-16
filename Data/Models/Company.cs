@@ -10,6 +10,7 @@ public class Company
         Factures = factures;
     }
 
+    [Key]
     public Guid Id { get; set; }
 
     [Required]

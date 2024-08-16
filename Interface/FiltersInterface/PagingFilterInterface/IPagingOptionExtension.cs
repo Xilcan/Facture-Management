@@ -1,4 +1,5 @@
 ﻿namespace Interface.FiltersInterface.PagingFilterInterface;
+
 public interface IPagingOptionExtension
 {
     IEnumerable<string> GetStringOptions();

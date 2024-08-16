@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace Interface.FiltersInterface.PagingFilterInterface;
+
 public class PagingDtoOption
 {
     [JsonPropertyName("page")]

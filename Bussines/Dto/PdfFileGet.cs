@@ -1,4 +1,5 @@
 ﻿namespace Bussines.Dto;
+
 public class PdfFileGet
 {
     public Guid Id { get; set; }

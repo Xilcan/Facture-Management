@@ -5,6 +5,7 @@ namespace Data.Models;
 
 public class FactureDetail
 {
+    [Key]
     public Guid Id { get; set; }
 
     [Required]
@@ -39,8 +40,10 @@ public class FactureDetail
     public Guid ProductId { get; set; }
 
     [Required]
+    [ForeignKey(nameof(FactureId))]
     public Facture Factures { get; set; }
 
     [Required]
+    [ForeignKey(nameof(ProductId))]
     public Product Products { get; set; }
 }

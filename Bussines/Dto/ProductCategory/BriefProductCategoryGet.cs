@@ -1,4 +1,5 @@
 ﻿namespace Bussines.Dto.ProductCategory;
+
 public class BriefProductCategoryGet
 {
     public Guid Id { get; set; }

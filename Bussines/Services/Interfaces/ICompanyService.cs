@@ -8,7 +8,7 @@ public interface ICompanyService
 
     public Task<IEnumerable<BriefCompanyGet>> GetAllAsync();
 
-    public Task AddAsync(CompanyPost company);
+    public Task<Guid> AddAsync(CompanyPost company);
 
     public Task UpdateAsync(FullCompanyPut company);
 

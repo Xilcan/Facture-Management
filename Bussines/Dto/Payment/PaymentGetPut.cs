@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bussines.Dto.Payment;
+
 public class PaymentGetPut
 {
     [Required]

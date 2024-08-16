@@ -1,4 +1,5 @@
 ﻿namespace Interface.FiltersInterface.FactureFilterInterface;
+
 public class SortingFactureExtension : ISortingFactureExtension
 {
     public IEnumerable<string> GetSortingFactureOptions()

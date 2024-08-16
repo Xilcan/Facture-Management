@@ -10,6 +10,7 @@ using Bussines.Dto.ProductCategory;
 using Data.Models;
 
 namespace Bussines.AutoMapper;
+
 public class MappingProfile : Profile
 {
     public MappingProfile()

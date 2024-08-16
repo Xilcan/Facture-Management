@@ -6,6 +6,7 @@ using QuestPDF.Infrastructure;
 using Document = QuestPDF.Fluent.Document;
 
 namespace Bussines.Services;
+
 public class PdfService : IPdfService
 {
     public byte[] CreatePdfFile(Facture facture)

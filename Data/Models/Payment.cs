@@ -20,5 +20,6 @@ public class Payment
     [Required]
     public Guid FactureId { get; set; }
 
+    [ForeignKey(nameof(FactureId))]
     public virtual Facture Facture { get; set; }
 }

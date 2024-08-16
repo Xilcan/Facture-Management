@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
@@ -31,11 +32,13 @@ public class Facture
     public Guid UserCompanyId { get; set; }
 
     [Required]
+    [ForeignKey(nameof(UserCompanyId))]
     public virtual Company UserCompany { get; set; }
 
     public Guid CompanyId { get; set; }
 
     [Required]
+    [ForeignKey(nameof(CompanyId))]
     public virtual Company Company { get; set; }
 
     [Required]

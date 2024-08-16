@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Bussines.Dto.Adress;
+
 public class AddressPost
 {
     [Required]

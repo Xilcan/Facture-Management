@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bussines.Dto.FactureDetails;
+
 public class FactureDetailsPut
 {
     [Required]

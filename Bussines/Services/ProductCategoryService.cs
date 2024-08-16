@@ -6,6 +6,7 @@ using Data.Repositories.Interfaces;
 using Interface.ExceptionsHandling.Exceptions;
 
 namespace Bussines.Services;
+
 public class ProductCategoryService : IProductCategoryService
 {
     private readonly IMapper _mapper;

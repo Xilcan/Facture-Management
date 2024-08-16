@@ -1,6 +1,7 @@
 ﻿using System.Net;
 
 namespace Interface.ExceptionsHandling.Exceptions;
+
 public class BadRequestException : HttpException
 {
     private static readonly HttpStatusCode _statusCode = HttpStatusCode.BadRequest;

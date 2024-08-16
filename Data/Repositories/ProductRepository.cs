@@ -4,6 +4,7 @@ using Interface.ExceptionsHandling.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories;
+
 public class ProductRepository : IProductRepository
 {
     private readonly FacturesManagementContext _context;

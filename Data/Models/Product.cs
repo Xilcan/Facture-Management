@@ -5,6 +5,7 @@ namespace Data.Models;
 
 public class Product
 {
+    [Key]
     public Guid Id { get; set; }
 
     public string Name { get; set; }
@@ -27,5 +28,6 @@ public class Product
 
     public virtual ICollection<FactureDetail> FactureDetails { get; set; }
 
+    [ForeignKey(nameof(CategoryId))]
     public virtual ProductCategory Category { get; set; }
 }

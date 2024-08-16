@@ -1,6 +1,7 @@
 ﻿using Data.Repositories.Interfaces;
 
 namespace Data.Repositories;
+
 public class UnitOfWork : IUnitOfWork
 {
     private readonly FacturesManagementContext _facturesManagementContext;

@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 
 namespace Bussines.Dto.Product;
+
 public class BriefProductGet
 {
     public Guid Id { get; set; }

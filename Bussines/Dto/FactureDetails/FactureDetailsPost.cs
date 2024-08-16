@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bussines.Dto.FactureDetails;
+
 public class FactureDetailsPost
 {
     [Column(TypeName = "decimal(18, 2)")]

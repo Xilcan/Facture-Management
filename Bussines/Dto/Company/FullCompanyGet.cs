@@ -2,6 +2,7 @@
 using Bussines.Dto.Adress;
 
 namespace Bussines.Dto.Company;
+
 public class FullCompanyGet
 {
     public Guid Id { get; set; }

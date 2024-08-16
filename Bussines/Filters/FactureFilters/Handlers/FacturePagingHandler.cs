@@ -2,6 +2,7 @@
 using Bussines.Filters.FactureFilters.Models;
 
 namespace Bussines.Filters.FactureFilters.Handlers;
+
 public class FacturePagingHandler : IFacturePipelineGetHandler
 {
     public FactureFilterContext Handle(FactureFilterContext context)

@@ -1,6 +1,7 @@
 ﻿using Data.Models;
 
 namespace Data.Repositories.Interfaces;
+
 public interface IProductRepository
 {
     public Task<Product> GetByIdAsync(Guid id);

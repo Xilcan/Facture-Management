@@ -2,6 +2,7 @@
 using Interface.FiltersInterface.PagingFilterInterface;
 
 namespace Bussines.Filters.FactureFilters.Models;
+
 public class FactureFilterContext
 {
     public IQueryable<Facture> Query { get; set; }

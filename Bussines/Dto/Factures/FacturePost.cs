@@ -3,6 +3,7 @@ using Bussines.Dto.FactureDetails;
 using Bussines.Dto.Payment;
 
 namespace Bussines.Dto.Factures;
+
 public class FacturePost
 {
     [Required]

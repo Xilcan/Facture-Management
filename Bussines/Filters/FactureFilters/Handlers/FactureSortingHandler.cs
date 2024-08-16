@@ -5,6 +5,7 @@ using Data.Models;
 using Interface.FiltersInterface.FactureFilterInterface;
 
 namespace Bussines.Filters.FactureFilters.Handlers;
+
 public class FactureSortingHandler : IFacturePipelineGetHandler
 {
     private readonly ISortingFactureExtension _sortingFactureExtension;

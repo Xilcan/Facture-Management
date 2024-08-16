@@ -1,11 +1,14 @@
 ﻿using Bussines.Dto.ProductCategory;
 using Bussines.Services.Interfaces;
 using Interface.ExceptionsHandling.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ProductCategoryController : ControllerBase
 {
     private readonly IProductCategoryService _productCategoryService;

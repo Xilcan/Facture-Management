@@ -1,4 +1,5 @@
 ﻿namespace Interface.FiltersInterface.FactureFilterInterface;
+
 public enum EnumSortingFacture
 {
     DateAsc,

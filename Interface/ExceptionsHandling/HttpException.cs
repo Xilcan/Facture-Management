@@ -1,6 +1,7 @@
 ﻿using System.Net;
 
 namespace Interface.ExceptionsHandling;
+
 public class HttpException : Exception
 {
     public HttpException(string? message, HttpStatusCode statusCode)

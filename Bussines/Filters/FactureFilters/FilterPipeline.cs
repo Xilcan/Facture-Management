@@ -3,6 +3,7 @@ using Bussines.Filters.FactureFilters.Models;
 using Data.Models;
 
 namespace Bussines.Filters.FactureFilters;
+
 public class FilterPipeline : IFactureFilterPipeline
 {
     private readonly List<IFacturePipelineGetHandler> _handlers;

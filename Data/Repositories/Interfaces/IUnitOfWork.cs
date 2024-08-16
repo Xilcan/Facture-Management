@@ -1,4 +1,5 @@
 ﻿namespace Data.Repositories.Interfaces;
+
 public interface IUnitOfWork
 {
     ICompanyRepository CompanyRepository { get; }

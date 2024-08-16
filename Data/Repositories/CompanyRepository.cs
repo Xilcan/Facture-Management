@@ -17,11 +17,12 @@ public class CompanyRepository : ICompanyRepository
         _context = context;
     }
 
-    public async Task AddAsync(Company company)
+    public async Task<Guid> AddAsync(Company company)
     {
         try
         {
             await _context.Companies.AddAsync(company);
+            return company.Id;
         }
         catch (Exception ex)
         {

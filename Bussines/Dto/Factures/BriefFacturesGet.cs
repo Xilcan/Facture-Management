@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Bussines.Dto.Factures;
+
 public class BriefFacturesGet
 {
     public Guid Id { get; set; }

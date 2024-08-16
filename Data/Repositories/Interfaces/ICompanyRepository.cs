@@ -8,7 +8,7 @@ public interface ICompanyRepository
 
     public Task<IEnumerable<Company>> GetAllAsync();
 
-    public Task AddAsync(Company company);
+    public Task<Guid> AddAsync(Company company);
 
     public void Update(Company company);
 

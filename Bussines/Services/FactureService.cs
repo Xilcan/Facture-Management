@@ -10,6 +10,7 @@ using Interface.FiltersInterface.PagingFilterInterface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bussines.Services;
+
 public class FactureService : IFactureService
 {
     private readonly IUnitOfWork _unitOfWork;

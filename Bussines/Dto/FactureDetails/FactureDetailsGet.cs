@@ -1,6 +1,7 @@
 ﻿using Bussines.Dto.Product;
 
 namespace Bussines.Dto.FactureDetails;
+
 public class FactureDetailsGet
 {
     public Guid Id { get; set; }

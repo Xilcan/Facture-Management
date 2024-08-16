@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using System.Text;
 using Api.Middleware;
 using Bussines.AutoMapper;
 using Bussines.Filters.FactureFilters;
@@ -7,12 +8,16 @@ using Bussines.Filters.FactureFilters.Interfaces;
 using Bussines.Services;
 using Bussines.Services.Interfaces;
 using Data;
+using Data.Models.AuthenticationModels;
 using Data.Repositories;
 using Data.Repositories.Interfaces;
 using Interface.FiltersInterface.FactureFilterInterface;
 using Interface.FiltersInterface.PagingFilterInterface;
 using Interface.Logger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +33,41 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Services.AddDbContext<FacturesManagementContext>(options =>
 options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Api")));
+
+var tokenValidationParameters = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["JWT:Secret"] ?? throw new Exception("Secret Key is Null"))),
+
+    ValidateIssuer = true,
+    ValidIssuer = builder.Configuration["JWT:Issuer"] ?? throw new Exception("Issuer is Null"),
+
+    ValidateAudience = true,
+    ValidAudience = builder.Configuration["JWT:Audience"] ?? throw new Exception("Audience is Null"),
+
+    ValidateLifetime = true,
+    ClockSkew = TimeSpan.Zero,
+};
+
+builder.Services.AddSingleton(tokenValidationParameters);
+
+// Add Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<FacturesManagementContext>()
+    .AddDefaultTokenProviders();
+
+// Add Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = tokenValidationParameters;
+});
 
 builder.Services.AddScoped<IPagingOptionExtension, PagingOptionExtension>();
 builder.Services.AddScoped<ISortingFactureExtension, SortingFactureExtension>();
@@ -104,6 +144,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

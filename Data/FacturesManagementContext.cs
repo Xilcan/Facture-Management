@@ -1,10 +1,12 @@
 ﻿using Data.Models;
+using Data.Models.AuthenticationModels;
 using Data.Models.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data;
 
-public class FacturesManagementContext(DbContextOptions options) : DbContext(options)
+public class FacturesManagementContext(DbContextOptions options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<CompanyAddress> CompanyAddresses { get; set; }
 
@@ -22,6 +24,8 @@ public class FacturesManagementContext(DbContextOptions options) : DbContext(opt
 
     public DbSet<PdfFile> PdfFiles { get; set; }
 
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -30,15 +34,18 @@ public class FacturesManagementContext(DbContextOptions options) : DbContext(opt
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.ApplyConfiguration(new CompaniesConfiguration());
-        modelBuilder.ApplyConfiguration(new CompanyAddressesConfiguration());
-        modelBuilder.ApplyConfiguration(new FactureDetailConfiguration());
-        modelBuilder.ApplyConfiguration(new FacturesConfiguration());
-        modelBuilder.ApplyConfiguration(new PaymentConfiguration());
-        modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
-        modelBuilder.ApplyConfiguration(new ProductsConfiguration());
-        modelBuilder.ApplyConfiguration(new PdfFileConfiguration());
+        base.OnModelCreating(builder);
+
+        builder.ApplyConfiguration(new CompaniesConfiguration());
+        builder.ApplyConfiguration(new CompanyAddressesConfiguration());
+        builder.ApplyConfiguration(new FactureDetailConfiguration());
+        builder.ApplyConfiguration(new FacturesConfiguration());
+        builder.ApplyConfiguration(new PaymentConfiguration());
+        builder.ApplyConfiguration(new ProductCategoryConfiguration());
+        builder.ApplyConfiguration(new ProductsConfiguration());
+        builder.ApplyConfiguration(new PdfFileConfiguration());
+        builder.ApplyConfiguration(new RefreshTokenConfiguration());
     }
 }

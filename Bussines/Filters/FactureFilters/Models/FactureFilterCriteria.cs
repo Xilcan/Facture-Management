@@ -1,4 +1,5 @@
 ﻿namespace Bussines.Filters.FactureFilters.Models;
+
 public class FactureFilterCriteria
 {
     public string? FactureName { get; set; }
