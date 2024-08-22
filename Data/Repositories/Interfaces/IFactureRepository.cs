@@ -4,9 +4,9 @@ namespace Data.Repositories.Interfaces;
 
 public interface IFactureRepository
 {
-    public Task<Facture> GetFactureByIdAsync(Guid id);
+    public Task<Facture> GetFactureByIdAsync(Guid id, Guid userCompanyId);
 
-    public Task<IQueryable<Facture>> GetFacturesAsync();
+    public Task<IQueryable<Facture>> GetFacturesAsync(Guid userCompanyId);
 
     public Task AddAsync(Facture facture);
 
@@ -14,9 +14,9 @@ public interface IFactureRepository
 
     public void Delete(Facture facture);
 
-    public Task<bool> ExistsByIdAsync(Guid id);
+    public Task<bool> ExistsByIdAsync(Guid id, Guid userCompanyId);
 
-    public Task<bool> ExistsByNameAsync(string name);
+    public Task<bool> ExistsByNameAsync(string name, Guid userCompanyId);
 
     public void DeleteFactureDetailsByRange(IEnumerable<FactureDetail> factureDetails);
 

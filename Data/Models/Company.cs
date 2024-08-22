@@ -2,7 +2,7 @@
 
 namespace Data.Models;
 
-public class Company
+public class Company : BaseEntity
 {
     public Company()
     {
@@ -10,14 +10,13 @@ public class Company
         Factures = factures;
     }
 
-    [Key]
-    public Guid Id { get; set; }
-
     [Required]
     public string Name { get; set; }
 
     [Required]
     public long NIP { get; set; }
+
+    public Guid? UserCompanyId { get; set; }
 
     public virtual ICollection<Facture> Factures { get; set; }
 

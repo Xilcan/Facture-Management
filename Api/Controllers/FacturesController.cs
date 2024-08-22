@@ -22,26 +22,41 @@ public class FacturesController : ControllerBase
 
     // GET: api/<FacturesController>
     [HttpGet]
-    public async Task<IEnumerable<BriefFacturesGet>> Get(
+    public async Task<ActionResult<IEnumerable<BriefFacturesGet>>> Get(
         [FromQuery] FactureFilterCriteria factureSearchModel,
         [FromQuery] FactureSortOptions factureSortOptions,
         [FromQuery] PagingDtoOption pagingDtoOption)
     {
-        return await _factureService.GetFacturesAsync(factureSearchModel, factureSortOptions, pagingDtoOption);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<IEnumerable<BriefFacturesGet>>)Forbid()
+            : (ActionResult<IEnumerable<BriefFacturesGet>>)Ok(await _factureService.GetFacturesAsync(factureSearchModel, factureSortOptions, pagingDtoOption, userCompanyId));
     }
 
     // GET api/<FacturesController>/5
     [HttpGet("{id}")]
-    public async Task<FullFactureGet> Get(Guid id)
+    public async Task<ActionResult<FullFactureGet>> Get(Guid id)
     {
-        return await _factureService.GetFactureByIdAsync(id);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<FullFactureGet>)Forbid()
+            : (ActionResult<FullFactureGet>)Ok(await _factureService.GetFactureByIdAsync(id, userCompanyId));
     }
 
     // POST api/<FacturesController>
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] FacturePost value)
     {
-        await _factureService.AddAsync(value);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _factureService.AddAsync(value, userCompanyId);
         return Ok();
     }
 
@@ -49,7 +64,14 @@ public class FacturesController : ControllerBase
     [HttpPut]
     public async Task<ActionResult> Put([FromBody] FacturePut value)
     {
-        await _factureService.UpdateAsync(value);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _factureService.UpdateAsync(value, userCompanyId);
         return Ok();
     }
 
@@ -57,7 +79,14 @@ public class FacturesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        await _factureService.DeleteAsync(id);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _factureService.DeleteAsync(id, userCompanyId);
         return Ok();
     }
 }

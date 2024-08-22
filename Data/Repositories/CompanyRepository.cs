@@ -17,12 +17,11 @@ public class CompanyRepository : ICompanyRepository
         _context = context;
     }
 
-    public async Task<Guid> AddAsync(Company company)
+    public async Task AddAsync(Company company)
     {
         try
         {
             await _context.Companies.AddAsync(company);
-            return company.Id;
         }
         catch (Exception ex)
         {
@@ -58,11 +57,11 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<bool> ExistsByIdAsync(Guid id)
+    public async Task<bool> ExistsByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            return await _context.Companies.AnyAsync(c => c.Id == id);
+            return await _context.Companies.AnyAsync(c => c.Id == id && c.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -70,11 +69,11 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<bool> ExistsByNIPAsync(long nip)
+    public async Task<bool> ExistsByNIPAsync(long nip, Guid userCompanyId)
     {
         try
         {
-            return await _context.Companies.AnyAsync(c => c.NIP == nip);
+            return await _context.Companies.AnyAsync(c => c.NIP == nip && c.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -82,11 +81,12 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<IEnumerable<Company>> GetAllAsync()
+    public async Task<IEnumerable<Company>> GetAllAsync(Guid userCompanyId)
     {
         try
         {
             return await _context.Companies
+                .Where(c => c.UserCompanyId == userCompanyId)
                 .Include(c => c.Address)
                 .Include(c => c.Factures)
                 .ToListAsync();
@@ -97,12 +97,12 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    public async Task<Company> GetByIdAsync(Guid id)
+    public async Task<Company> GetByIdAsync(Guid id, Guid? userCompanyId)
     {
         Company result;
         try
         {
-            result = await _context.Companies.Where(c => c.Id == id)
+            result = await _context.Companies.Where(c => c.Id == id && c.UserCompanyId == userCompanyId)
                 .Include(c => c.Address)
                 .Include(c => c.Factures)
                 .FirstOrDefaultAsync();

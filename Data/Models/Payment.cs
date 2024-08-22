@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
-public class Payment
+public class Payment : BaseEntity
 {
-    public Guid Id { get; set; }
-
     public string Method { get; set; } = "Cash";
 
     [Column(TypeName = "decimal(18, 2)")]

@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
-public class PdfFile
+public class PdfFile : BaseEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
     public string Name { get; set; }
 
     public Guid FactureId { get; set; }

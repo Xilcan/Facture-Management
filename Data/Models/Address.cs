@@ -2,11 +2,8 @@
 
 namespace Data.Models;
 
-public class Address
+public class Address : BaseEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
     [Required]
     public string Country { get; set; }
 

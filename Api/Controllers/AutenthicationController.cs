@@ -145,6 +145,7 @@ public class AutenthicationController : ControllerBase
             new(JwtRegisteredClaimNames.Email, applicationUser.Email ?? throw new Exception("GenerateJWTTokenAsync email error")),
             new(JwtRegisteredClaimNames.Sub, applicationUser.Email),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new("CompanyId", applicationUser.CompanyId.ToString()),
         };
 
         var authSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:Secret"]
@@ -165,7 +166,6 @@ public class AutenthicationController : ControllerBase
             {
                 Token = jwtToken,
                 RefreshToken = rToken.Token,
-                CompanyId = applicationUser.CompanyId,
                 ExpiresAt = token.ValidTo,
             };
 
@@ -189,7 +189,6 @@ public class AutenthicationController : ControllerBase
         {
             Token = jwtToken,
             RefreshToken = refreshToken.Token,
-            CompanyId = applicationUser.CompanyId,
             ExpiresAt = token.ValidTo,
         };
 

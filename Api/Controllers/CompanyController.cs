@@ -21,18 +21,26 @@ public class CompanyController : ControllerBase
 
     // GET: api/<CompanyService>
     [HttpGet]
-    public async Task<IEnumerable<BriefCompanyGet>> Get()
+    public async Task<ActionResult<IEnumerable<BriefCompanyGet>>> Get()
     {
-        return await _companyService.GetAllAsync();
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<IEnumerable<BriefCompanyGet>>)Forbid()
+            : (ActionResult<IEnumerable<BriefCompanyGet>>)Ok(await _companyService.GetAllAsync(userCompanyId));
     }
 
     // GET api/<CompanyService>/5
     [HttpGet("{id}")]
-    public async Task<FullCompanyGet> Get(Guid id)
+    public async Task<ActionResult<FullCompanyGet>> Get(Guid id)
     {
-        return id == Guid.Empty
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<FullCompanyGet>)Forbid()
+            : (ActionResult<FullCompanyGet>)(id == Guid.Empty
             ? throw new BadRequestException($"Null or Empty argument {nameof(id)}")
-            : await _companyService.GetByIdAsync(id);
+            : Ok(await _companyService.GetByIdAsync(id, userCompanyId)));
     }
 
     // POST api/<CompanyService>
@@ -50,7 +58,14 @@ public class CompanyController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _companyService.AddAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _companyService.AddAsync(request, userCompanyId);
         return Ok();
     }
 
@@ -69,7 +84,14 @@ public class CompanyController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _companyService.UpdateAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _companyService.UpdateAsync(request, userCompanyId);
         return Ok();
     }
 
@@ -82,7 +104,14 @@ public class CompanyController : ControllerBase
             throw new BadRequestException($"Null or Empty argument {nameof(id)}");
         }
 
-        await _companyService.DeleteAsync(id);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _companyService.DeleteAsync(id, userCompanyId);
         return Ok();
     }
 }

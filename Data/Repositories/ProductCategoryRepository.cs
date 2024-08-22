@@ -40,11 +40,11 @@ public class ProductCategoryRepository : IProductCategoryRepository
         }
     }
 
-    public async Task<bool> ExistByNameAsync(string name)
+    public async Task<bool> ExistByNameAsync(string name, Guid userCompanyId)
     {
         try
         {
-            return await _context.ProductCategories.AnyAsync(c => c.Name == name);
+            return await _context.ProductCategories.AnyAsync(c => c.Name == name && c.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -52,11 +52,12 @@ public class ProductCategoryRepository : IProductCategoryRepository
         }
     }
 
-    public async Task<IEnumerable<ProductCategory>> GetAllAsync()
+    public async Task<IEnumerable<ProductCategory>> GetAllAsync(Guid userCompanyId)
     {
         try
         {
             return await _context.ProductCategories
+                .Where(pc => pc.UserCompanyId == userCompanyId)
                 .Include(pc => pc.Products)
                 .ToListAsync();
         }
@@ -66,12 +67,12 @@ public class ProductCategoryRepository : IProductCategoryRepository
         }
     }
 
-    public async Task<ProductCategory> GetByIdAsync(Guid id)
+    public async Task<ProductCategory> GetByIdAsync(Guid id, Guid userCompanyId)
     {
         ProductCategory? result;
         try
         {
-            result = await _context.ProductCategories.Where(c => c.Id == id)
+            result = await _context.ProductCategories.Where(c => c.Id == id && c.UserCompanyId == userCompanyId)
                 .Include(pc => pc.Products)
                 .FirstOrDefaultAsync();
         }

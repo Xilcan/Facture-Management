@@ -21,18 +21,26 @@ public class ProductController : ControllerBase
 
     // GET: api/<ProductController>
     [HttpGet]
-    public async Task<IEnumerable<BriefProductGet>> GetAll([FromQuery] Guid? categoryId)
+    public async Task<ActionResult<IEnumerable<BriefProductGet>>> GetAll([FromQuery] Guid? categoryId)
     {
-        return await _productService.GetAllAsync(categoryId);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<IEnumerable<BriefProductGet>>)Forbid()
+            : (ActionResult<IEnumerable<BriefProductGet>>)Ok(await _productService.GetAllAsync(categoryId, userCompanyId));
     }
 
     // GET api/<ProductController>/5
     [HttpGet("{id}")]
-    public async Task<FullProductGet> Get(Guid id)
+    public async Task<ActionResult<FullProductGet>> Get(Guid id)
     {
-        return id == Guid.Empty
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<FullProductGet>)Forbid()
+            : (ActionResult<FullProductGet>)(id == Guid.Empty
             ? throw new BadRequestException($"Null or Empty argument {nameof(id)}")
-            : await _productService.GetByIdAsync(id);
+            : Ok(await _productService.GetByIdAsync(id, userCompanyId)));
     }
 
     // POST api/<ProductController>
@@ -50,7 +58,14 @@ public class ProductController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _productService.AddAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productService.AddAsync(request, userCompanyId);
         return Ok();
     }
 
@@ -69,7 +84,14 @@ public class ProductController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _productService.UpdateAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productService.UpdateAsync(request, userCompanyId);
         return Ok();
     }
 
@@ -82,7 +104,14 @@ public class ProductController : ControllerBase
             throw new BadRequestException($"Null or Empty argument {nameof(id)}");
         }
 
-        await _productService.DeleteAsync(id);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productService.DeleteAsync(id, userCompanyId);
         return Ok();
     }
 }

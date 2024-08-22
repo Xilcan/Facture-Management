@@ -20,16 +20,18 @@ public class ProductCategoryService : IProductCategoryService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddAsync(ProductCategoryPost productCategory)
+    public async Task AddAsync(ProductCategoryPost productCategory, Guid userCompanyId)
     {
         try
         {
-            if (await _unitOfWork.ProductCategoryRepository.ExistByNameAsync(productCategory.Name))
+            if (await _unitOfWork.ProductCategoryRepository.ExistByNameAsync(productCategory.Name, userCompanyId))
             {
                 throw new BadRequestException($"ProductCategory with name = {productCategory.Name} already exists");
             }
 
             var mappedProductCategory = _mapper.Map<ProductCategory>(productCategory);
+
+            mappedProductCategory.UserCompanyId = userCompanyId;
 
             await _unitOfWork.ProductCategoryRepository.AddAsync(mappedProductCategory);
             await _unitOfWork.SaveAsync();
@@ -40,18 +42,18 @@ public class ProductCategoryService : IProductCategoryService
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, Guid userCompanyId)
     {
-        var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(id);
+        var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(id, userCompanyId);
         _unitOfWork.ProductCategoryRepository.Delete(productCategory);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task<IEnumerable<BriefProductCategoryGet>> GetAllAsync()
+    public async Task<IEnumerable<BriefProductCategoryGet>> GetAllAsync(Guid userCompanyId)
     {
         try
         {
-            var productCategories = await _unitOfWork.ProductCategoryRepository.GetAllAsync();
+            var productCategories = await _unitOfWork.ProductCategoryRepository.GetAllAsync(userCompanyId);
 
             var mappedProductCategory = new List<BriefProductCategoryGet>();
             foreach (var productCategory in productCategories)
@@ -67,11 +69,11 @@ public class ProductCategoryService : IProductCategoryService
         }
     }
 
-    public async Task<FullProductCategoryGet> GetByIdAsync(Guid id)
+    public async Task<FullProductCategoryGet> GetByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(id);
+            var productCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(id, userCompanyId);
             return _mapper.Map<FullProductCategoryGet>(productCategory);
         }
         catch (AutoMapperMappingException ex)
@@ -80,13 +82,14 @@ public class ProductCategoryService : IProductCategoryService
         }
     }
 
-    public async Task UpdateAsync(BriefProductCategoryGet productCategory)
+    public async Task UpdateAsync(BriefProductCategoryGet productCategory, Guid userCompanyId)
     {
-        var existingProductCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(productCategory.Id);
+        var existingProductCategory = await _unitOfWork.ProductCategoryRepository.GetByIdAsync(productCategory.Id, userCompanyId);
+
         if (existingProductCategory.Name != productCategory.Name)
         {
             existingProductCategory.Name = productCategory.Name;
-            if (await _unitOfWork.ProductCategoryRepository.ExistByNameAsync(productCategory.Name))
+            if (await _unitOfWork.ProductCategoryRepository.ExistByNameAsync(productCategory.Name, userCompanyId))
             {
                 throw new BadRequestException($"ProductCategory with name = {productCategory.Name} already exists");
             }

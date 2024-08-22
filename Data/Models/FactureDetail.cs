@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
-public class FactureDetail
+public class FactureDetail : BaseEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
     [Required]
     [Column(TypeName = "decimal(18, 2)")]
     [Range(0.01, 9999999999999999.99)]

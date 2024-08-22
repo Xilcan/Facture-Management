@@ -40,11 +40,11 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<bool> ExistsByIdAsync(Guid id)
+    public async Task<bool> ExistsByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            return await _context.Products.AnyAsync(c => c.Id == id);
+            return await _context.Products.AnyAsync(c => c.Id == id && c.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -52,11 +52,11 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<bool> ExistsByNameAsync(string name)
+    public async Task<bool> ExistsByNameAsync(string name, Guid userCompanyId)
     {
         try
         {
-            return await _context.Products.AnyAsync(c => c.Name == name);
+            return await _context.Products.AnyAsync(c => c.Name == name && c.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -64,11 +64,12 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<IEnumerable<Product>> GetAllAsync(Guid userCompanyId)
     {
         try
         {
             return await _context.Products
+                .Where(p => p.UserCompanyId == userCompanyId)
                 .Include(p => p.Category)
                 .ToListAsync();
         }
@@ -78,12 +79,12 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<Product> GetByIdAsync(Guid id)
+    public async Task<Product> GetByIdAsync(Guid id, Guid userCompanyId)
     {
         Product? result;
         try
         {
-            result = await _context.Products.Where(c => c.Id == id)
+            result = await _context.Products.Where(c => c.Id == id && c.UserCompanyId == userCompanyId)
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync();
         }

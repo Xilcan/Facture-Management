@@ -39,24 +39,25 @@ public class FactureService : IFactureService
         _filterPipeline = filterPipeline;
     }
 
-    public async Task AddAsync(FacturePost facture)
+    public async Task AddAsync(FacturePost facture, Guid userCompanyId)
     {
         try
         {
             var mappedFacture = _mapper.Map<Facture>(facture);
-            if (await _unitOfWork.FactureRepository.ExistsByNameAsync(mappedFacture.Name))
+            if (await _unitOfWork.FactureRepository.ExistsByNameAsync(mappedFacture.Name, userCompanyId))
             {
                 throw new BadRequestException($"Facture with name = {mappedFacture.Name} already exists.");
             }
 
-            mappedFacture.UserCompany = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.UserCompanyId);
-            mappedFacture.Company = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.CompanyId);
+            mappedFacture.UserCompanyId = userCompanyId;
+            mappedFacture.UserCompany = await _unitOfWork.CompanyRepository.GetByIdAsync(userCompanyId, null);
+            mappedFacture.Company = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.CompanyId, userCompanyId);
 
             var factureDetails = new List<FactureDetail>();
             foreach (var iteam in facture.FactureDetails)
             {
                 var factureDetail = _mapper.Map<FactureDetail>(iteam);
-                factureDetail.Products = await _unitOfWork.ProductRepository.GetByIdAsync(iteam.ProductId);
+                factureDetail.Products = await _unitOfWork.ProductRepository.GetByIdAsync(iteam.ProductId, userCompanyId);
                 factureDetails.Add(factureDetail);
             }
 
@@ -83,18 +84,18 @@ public class FactureService : IFactureService
         }
     }
 
-    public async Task DeleteAsync(Guid factureId)
+    public async Task DeleteAsync(Guid factureId, Guid userCompanyId)
     {
-        var facture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(factureId);
+        var facture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(factureId, userCompanyId);
         _unitOfWork.FactureRepository.Delete(facture);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task<FullFactureGet> GetFactureByIdAsync(Guid id)
+    public async Task<FullFactureGet> GetFactureByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            var facture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(id);
+            var facture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(id, userCompanyId);
             var mappedFacture = _mapper.Map<FullFactureGet>(facture);
             return mappedFacture;
         }
@@ -107,9 +108,10 @@ public class FactureService : IFactureService
     public async Task<IEnumerable<BriefFacturesGet>> GetFacturesAsync(
         FactureFilterCriteria factureSearchModel,
         FactureSortOptions factureSortOptions,
-        PagingDtoOption pagingDtoOption)
+        PagingDtoOption pagingDtoOption,
+        Guid userCompanyId)
     {
-        var factures = await _unitOfWork.FactureRepository.GetFacturesAsync();
+        var factures = await _unitOfWork.FactureRepository.GetFacturesAsync(userCompanyId);
         var pagingOptions = _pagingExtension.GetPagingOption(pagingDtoOption);
         var factureFilterContext = new FactureFilterContext()
         {
@@ -132,14 +134,14 @@ public class FactureService : IFactureService
         }
     }
 
-    public async Task UpdateAsync(FacturePut facture)
+    public async Task UpdateAsync(FacturePut facture, Guid userCompanyId)
     {
         try
         {
-            var existingFacture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(facture.Id);
+            var existingFacture = await _unitOfWork.FactureRepository.GetFactureByIdAsync(facture.Id, userCompanyId);
             if (existingFacture.Name != facture.Name)
             {
-                if (await _unitOfWork.FactureRepository.ExistsByNameAsync(facture.Name))
+                if (await _unitOfWork.FactureRepository.ExistsByNameAsync(facture.Name, userCompanyId))
                 {
                     throw new BadRequestException($"Facture with name = {facture.Name} already exists.");
                 }
@@ -153,16 +155,10 @@ public class FactureService : IFactureService
             existingFacture.SaleDate = facture.SaleDate;
             existingFacture.City = facture.City;
 
-            if (existingFacture.UserCompanyId != facture.UserCompanyId)
-            {
-                existingFacture.UserCompanyId = facture.UserCompanyId;
-                existingFacture.UserCompany = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.UserCompanyId);
-            }
-
             if (existingFacture.CompanyId != facture.CompanyId)
             {
                 existingFacture.CompanyId = facture.CompanyId;
-                existingFacture.Company = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.CompanyId);
+                existingFacture.Company = await _unitOfWork.CompanyRepository.GetByIdAsync(facture.CompanyId, userCompanyId);
             }
 
             _unitOfWork.FactureRepository.DeleteFactureDetailsByRange(existingFacture.FactureDetails);
@@ -170,7 +166,7 @@ public class FactureService : IFactureService
             foreach (var item in facture.FactureDetails)
             {
                 var factureDetail = _mapper.Map<FactureDetail>(item);
-                factureDetail.Products = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductId);
+                factureDetail.Products = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductId, userCompanyId);
                 existingFacture.FactureDetails.Add(factureDetail);
             }
 

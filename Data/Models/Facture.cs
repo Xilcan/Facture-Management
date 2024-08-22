@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models;
 
-public class Facture
+public class Facture : BaseCompanyIdEntity
 {
-    [Key]
-    [Required]
-    public Guid Id { get; set; }
-
     [Required]
     public long NumberFactures { get; set; }
 
@@ -28,8 +24,6 @@ public class Facture
     public DateTime PaymentDate { get; set; }
 
     public string? Comment { get; set; }
-
-    public Guid UserCompanyId { get; set; }
 
     [Required]
     [ForeignKey(nameof(UserCompanyId))]

@@ -68,11 +68,11 @@ public class FactureRepository : IFactureRepository
         }
     }
 
-    public async Task<bool> ExistsByIdAsync(Guid id)
+    public async Task<bool> ExistsByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            return await _context.Factures.AnyAsync(f => f.Id == id);
+            return await _context.Factures.AnyAsync(f => f.Id == id && f.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -80,11 +80,11 @@ public class FactureRepository : IFactureRepository
         }
     }
 
-    public async Task<bool> ExistsByNameAsync(string name)
+    public async Task<bool> ExistsByNameAsync(string name, Guid userCompanyId)
     {
         try
         {
-            return await _context.Factures.AnyAsync(f => f.Name == name);
+            return await _context.Factures.AnyAsync(f => f.Name == name && f.UserCompanyId == userCompanyId);
         }
         catch (Exception ex)
         {
@@ -92,7 +92,7 @@ public class FactureRepository : IFactureRepository
         }
     }
 
-    public async Task<Facture> GetFactureByIdAsync(Guid id)
+    public async Task<Facture> GetFactureByIdAsync(Guid id, Guid userCompanyId)
     {
         ArgumentNullException.ThrowIfNull(id);
         Facture? result;
@@ -100,7 +100,7 @@ public class FactureRepository : IFactureRepository
         {
             result = await _context.Factures
                 .AsNoTracking()
-            .Where(a => a.Id == id)
+            .Where(a => a.Id == id && a.UserCompanyId == userCompanyId)
             .Include(f => f.Company)
                 .ThenInclude(c => c!.Address)
             .Include(f => f.UserCompany)
@@ -120,11 +120,12 @@ public class FactureRepository : IFactureRepository
         return result ?? throw new NotFoundException($"Cannot find the Facture with id = {id}");
     }
 
-    public Task<IQueryable<Facture>> GetFacturesAsync()
+    public Task<IQueryable<Facture>> GetFacturesAsync(Guid userCompanyId)
     {
         try
         {
             var result = _context.Factures
+                .Where(f => f.UserCompanyId == userCompanyId)
                 .AsNoTracking()
             .Include(f => f.Company)
                 .ThenInclude(c => c!.Address)

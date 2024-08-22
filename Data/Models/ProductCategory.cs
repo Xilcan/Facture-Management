@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Data.Models;
 
-namespace Data.Models;
-
-public class ProductCategory
+public class ProductCategory : BaseCompanyIdEntity
 {
-    [Key]
-    public Guid Id { get; set; }
-
     public string Name { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;

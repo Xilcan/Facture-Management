@@ -147,6 +147,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<CompanyAuthorizationMiddleware>();
+
 app.MapControllers();
 
 app.Run();

@@ -21,19 +21,21 @@ public class CompanyService : ICompanyService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Guid> AddAsync(CompanyPost company)
+    public async Task AddAsync(CompanyPost company, Guid userCompanyId)
     {
         try
         {
             var newCompany = _mapper.Map<Company>(company);
-            if (await _unitOfWork.CompanyRepository.ExistsByNIPAsync(newCompany.NIP))
+            if (await _unitOfWork.CompanyRepository.ExistsByNIPAsync(newCompany.NIP, userCompanyId))
             {
                 throw new BadRequestException($"Company with NIP = {newCompany.NIP} already exists.");
             }
 
-            var companyId = await _unitOfWork.CompanyRepository.AddAsync(newCompany);
+            newCompany.UserCompanyId = userCompanyId;
+
+            await _unitOfWork.CompanyRepository.AddAsync(newCompany);
             await _unitOfWork.SaveAsync();
-            return companyId;
+            return;
         }
         catch (AutoMapperMappingException ex)
         {
@@ -41,18 +43,18 @@ public class CompanyService : ICompanyService
         }
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, Guid userCompanyId)
     {
-        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id);
+        var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id, userCompanyId);
         _unitOfWork.CompanyRepository.Delete(company);
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task<IEnumerable<BriefCompanyGet>> GetAllAsync()
+    public async Task<IEnumerable<BriefCompanyGet>> GetAllAsync(Guid userCompanyId)
     {
         try
         {
-            var companies = await _unitOfWork.CompanyRepository.GetAllAsync();
+            var companies = await _unitOfWork.CompanyRepository.GetAllAsync(userCompanyId);
 
             var mappedCompanies = new List<BriefCompanyGet>();
             foreach (var company in companies)
@@ -68,11 +70,11 @@ public class CompanyService : ICompanyService
         }
     }
 
-    public async Task<FullCompanyGet> GetByIdAsync(Guid id)
+    public async Task<FullCompanyGet> GetByIdAsync(Guid id, Guid userCompanyId)
     {
         try
         {
-            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id);
+            var company = await _unitOfWork.CompanyRepository.GetByIdAsync(id, userCompanyId);
             return _mapper.Map<FullCompanyGet>(company);
         }
         catch (AutoMapperMappingException ex)
@@ -81,16 +83,16 @@ public class CompanyService : ICompanyService
         }
     }
 
-    public async Task UpdateAsync(FullCompanyPut company)
+    public async Task UpdateAsync(FullCompanyPut company, Guid userCompanyId)
     {
         try
         {
-            var existingCompany = await _unitOfWork.CompanyRepository.GetByIdAsync(company.Id);
+            var existingCompany = await _unitOfWork.CompanyRepository.GetByIdAsync(company.Id, userCompanyId);
             existingCompany.Name = company.Name;
             if (existingCompany.NIP != company.NIP)
             {
                 existingCompany.NIP = company.NIP;
-                if (await _unitOfWork.CompanyRepository.ExistsByNIPAsync(existingCompany.NIP))
+                if (await _unitOfWork.CompanyRepository.ExistsByNIPAsync(existingCompany.NIP, userCompanyId))
                 {
                     throw new BadRequestException($"Company with NIP = {existingCompany.NIP} already exists.");
                 }

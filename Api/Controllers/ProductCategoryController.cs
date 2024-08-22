@@ -21,18 +21,26 @@ public class ProductCategoryController : ControllerBase
 
     // GET: api/<ProductCategoryController>
     [HttpGet]
-    public async Task<IEnumerable<BriefProductCategoryGet>> Get()
+    public async Task<ActionResult<IEnumerable<BriefProductCategoryGet>>> Get()
     {
-        return await _productCategoryService.GetAllAsync();
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<IEnumerable<BriefProductCategoryGet>>)Forbid()
+            : (ActionResult<IEnumerable<BriefProductCategoryGet>>)Ok(await _productCategoryService.GetAllAsync(userCompanyId));
     }
 
     // GET api/<ProductCategoryController>/5
     [HttpGet("{id}")]
-    public async Task<FullProductCategoryGet> Get(Guid id)
+    public async Task<ActionResult<FullProductCategoryGet>> Get(Guid id)
     {
-        return id == Guid.Empty
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        return userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId)
+            ? (ActionResult<FullProductCategoryGet>)Forbid()
+            : (ActionResult<FullProductCategoryGet>)(id == Guid.Empty
             ? throw new BadRequestException($"Null or Empty argument {nameof(id)}")
-            : await _productCategoryService.GetByIdAsync(id);
+            : Ok(await _productCategoryService.GetByIdAsync(id, userCompanyId)));
     }
 
     // POST api/<ProductCategoryController>
@@ -50,7 +58,14 @@ public class ProductCategoryController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _productCategoryService.AddAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productCategoryService.AddAsync(request, userCompanyId);
         return Created();
     }
 
@@ -69,7 +84,14 @@ public class ProductCategoryController : ControllerBase
             throw new BadRequestException("Validation error: \n" + errors);
         }
 
-        await _productCategoryService.UpdateAsync(request);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productCategoryService.UpdateAsync(request, userCompanyId);
         return Ok();
     }
 
@@ -82,7 +104,14 @@ public class ProductCategoryController : ControllerBase
             throw new BadRequestException($"Null or Empty argument {nameof(id)}");
         }
 
-        await _productCategoryService.DeleteAsync(id);
+        var userCompanyIdString = HttpContext.Items["CompanyId"]?.ToString();
+
+        if (userCompanyIdString == null || !Guid.TryParse(userCompanyIdString, out Guid userCompanyId))
+        {
+            return Forbid();
+        }
+
+        await _productCategoryService.DeleteAsync(id, userCompanyId);
         return Ok();
     }
 }

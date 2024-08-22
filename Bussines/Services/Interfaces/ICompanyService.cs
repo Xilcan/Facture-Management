@@ -4,13 +4,13 @@ namespace Bussines.Services.Interfaces;
 
 public interface ICompanyService
 {
-    public Task<FullCompanyGet> GetByIdAsync(Guid id);
+    public Task<FullCompanyGet> GetByIdAsync(Guid id, Guid userCompanyId);
 
-    public Task<IEnumerable<BriefCompanyGet>> GetAllAsync();
+    public Task<IEnumerable<BriefCompanyGet>> GetAllAsync(Guid userCompanyId);
 
-    public Task<Guid> AddAsync(CompanyPost company);
+    public Task AddAsync(CompanyPost company, Guid userCompanyId);
 
-    public Task UpdateAsync(FullCompanyPut company);
+    public Task UpdateAsync(FullCompanyPut company, Guid userCompanyId);
 
-    public Task DeleteAsync(Guid id);
+    public Task DeleteAsync(Guid id, Guid userCompanyId);
 }
